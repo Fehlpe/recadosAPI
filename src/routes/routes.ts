@@ -4,6 +4,7 @@ import { User, Note } from "../models/index";
 const router = Router();
 
 export const users: User[] = [];
+export const notes: Note[] = [];
 
 router.post("/users", (req: Request, res: Response) => {
   const { name, password, email } = req.body;
