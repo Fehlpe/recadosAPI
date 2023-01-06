@@ -7,9 +7,9 @@ export const users: User[] = [];
 export const notes: Note[] = [];
 
 router.post("/users", (req: Request, res: Response) => {
-  const { name, password, email } = req.body;
+  const { username, password, email } = req.body;
 
-  if (!name || !password || !email) {
+  if (!username || !password || !email) {
     return res.status(400).json({
       success: false,
       message: "Dados obrigatórios não registrados",
@@ -22,7 +22,7 @@ router.post("/users", (req: Request, res: Response) => {
         message: "Email já esta em uso!",
       });
     }
-    const user = new User(name, password, email);
+    const user = new User(username, password, email);
     users.push(user);
     return res.status(200).json({
       success: true,
