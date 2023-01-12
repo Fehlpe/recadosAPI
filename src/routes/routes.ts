@@ -1,3 +1,4 @@
+import { notEqual } from "assert";
 import { Router, Request, Response } from "express";
 import { User, Note } from "../models/index";
 
@@ -46,6 +47,82 @@ router.post("/users/login", (req: Request, res: Response) => {
     return res.status(401).json({
       success: false,
       message: "Usuário ou senha incorretos",
+    });
+  }
+});
+
+router.post("/users/notes", (req: Request, res: Response) => {
+  const { email, title, description } = req.body;
+
+  const userExists = users.some((user) => user.email === email);
+
+  if (!userExists) {
+    return res.status(401).json({
+      success: false,
+      message: "Recados não encontrados!",
+    });
+  } else {
+    const note = new Note(title, email, description);
+    notes.push(note);
+    return res.status(200).json({
+      success: true,
+      data: note,
+    });
+  }
+});
+
+router.get("/users/notes", (req: Request, res: Response) => {
+  const { email } = req.query;
+
+  const userExists = users.some((user) => user.email === email);
+  if (!userExists) {
+    return res.status(401).json({
+      success: false,
+      message: "Usuário não encontrado!",
+    });
+  } else {
+    const userNotes = notes.filter((note) => note.userEmail === email);
+    return res.status(200).json({
+      success: true,
+      data: userNotes,
+    });
+  }
+});
+
+router.put("/users/notes/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { title, description } = req.body;
+
+  const noteIndex = notes.findIndex((note) => note.id === id);
+  if (noteIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Nota não encontrada!",
+    });
+  } else {
+    notes[noteIndex].title = title;
+    notes[noteIndex].description = description;
+    return res.status(200).json({
+      success: true,
+      data: notes[noteIndex],
+    });
+  }
+});
+
+router.delete("/users/notes/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const noteIndex = notes.findIndex((note) => note.id === id);
+  if (noteIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Nota não encontrada!",
+    });
+  } else {
+    notes.splice(noteIndex, 1);
+    return res.status(200).json({
+      success: true,
+      message: "Nota excluída com sucesso!",
     });
   }
 });

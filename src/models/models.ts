@@ -1,13 +1,11 @@
 import { v4 } from "uuid";
 
 export class User {
-  id: number | string;
   username: string;
   password: string;
   email: string;
 
   constructor(username: string, password: string, email: string) {
-    this.id = v4();
     this.username = username;
     this.password = password;
     this.email = email;
@@ -15,14 +13,14 @@ export class User {
 }
 
 export class Note {
-  userId: string;
+  userEmail: string;
   id: number | string;
   title: string;
-  description: number;
+  description: string;
 
-  constructor(title: string, userId: string, description: number) {
+  constructor(title: string, userEmail: string, description: string) {
     this.id = v4();
-    this.userId = userId;
+    this.userEmail = userEmail;
     this.title = title;
     this.description = description;
   }
