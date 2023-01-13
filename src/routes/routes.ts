@@ -52,9 +52,9 @@ router.post("/users/login", (req: Request, res: Response) => {
 });
 
 router.post("/users/notes", (req: Request, res: Response) => {
-  const { email, title, description } = req.body;
+  const { userEmail, title, description } = req.body;
 
-  const userExists = users.some((user) => user.email === email);
+  const userExists = users.some((user) => user.email === userEmail);
 
   if (!userExists) {
     return res.status(401).json({
@@ -62,7 +62,7 @@ router.post("/users/notes", (req: Request, res: Response) => {
       message: "Recados não encontrados!",
     });
   } else {
-    const note = new Note(title, email, description);
+    const note = new Note(title, userEmail, description);
     notes.push(note);
     return res.status(200).json({
       success: true,
@@ -72,16 +72,16 @@ router.post("/users/notes", (req: Request, res: Response) => {
 });
 
 router.get("/users/notes", (req: Request, res: Response) => {
-  const { email } = req.query;
+  const { userEmail } = req.query;
 
-  const userExists = users.some((user) => user.email === email);
+  const userExists = users.some((user) => user.email === userEmail);
   if (!userExists) {
     return res.status(401).json({
       success: false,
       message: "Usuário não encontrado!",
     });
   } else {
-    const userNotes = notes.filter((note) => note.userEmail === email);
+    const userNotes = notes.filter((note) => note.userEmail === userEmail);
     return res.status(200).json({
       success: true,
       data: userNotes,
