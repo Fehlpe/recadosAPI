@@ -14,7 +14,7 @@ export class User {
 
 export class Note {
   userEmail: string;
-  id: number | string;
+  id: string;
   title: string;
   description: string;
 

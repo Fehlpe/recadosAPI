@@ -93,8 +93,8 @@ router.put("/users/notes/:id", (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, description } = req.body;
 
-  const noteIndex = notes.findIndex((note) => note.id === id);
-  if (noteIndex === -1) {
+  const noteIndex = notes.findIndex((note) => note.id == id);
+  if (noteIndex == -1) {
     return res.status(404).json({
       success: false,
       message: "Nota não encontrada!",
@@ -112,17 +112,19 @@ router.put("/users/notes/:id", (req: Request, res: Response) => {
 router.delete("/users/notes/:id", (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const noteIndex = notes.findIndex((note) => note.id === id);
-  if (noteIndex === -1) {
+  const note = notes.find((note) => note.id == id);
+  if (!note) {
     return res.status(404).json({
       success: false,
-      message: "Nota não encontrada!",
+      message: "Note not found!",
     });
   } else {
+    const noteIndex = notes.findIndex((n) => n == note);
     notes.splice(noteIndex, 1);
     return res.status(200).json({
       success: true,
-      message: "Nota excluída com sucesso!",
+      data: notes,
+      message: "Note deleted successfully!",
     });
   }
 });
