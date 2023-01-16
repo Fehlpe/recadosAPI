@@ -8,27 +8,34 @@ export const users: User[] = [];
 export const notes: Note[] = [];
 
 router.post("/users", (req: Request, res: Response) => {
-  const { username, password, email } = req.body;
+  const { username, password, password2, email } = req.body;
 
-  if (!username || !password || !email) {
-    return res.status(400).json({
+  if (password !== password2) {
+    return res.status(401).json({
       success: false,
-      message: "Required fields not filled",
+      message: "Passwords are different",
     });
   } else {
-    const emailExists = users.some((user) => user.email === email);
-    if (emailExists) {
-      return res.status(404).json({
+    if (!username || !password || !email) {
+      return res.status(400).json({
         success: false,
-        message: "Email already in use!",
+        message: "Required fields not filled",
+      });
+    } else {
+      const emailExists = users.some((user) => user.email === email);
+      if (emailExists) {
+        return res.status(409).json({
+          success: false,
+          message: "Email already in use!",
+        });
+      }
+      const user = new User(username, password, email);
+      users.push(user);
+      return res.status(200).json({
+        success: true,
+        data: user,
       });
     }
-    const user = new User(username, password, email);
-    users.push(user);
-    return res.status(200).json({
-      success: true,
-      data: user,
-    });
   }
 });
 
@@ -44,7 +51,7 @@ router.post("/users/login", (req: Request, res: Response) => {
       success: true,
     });
   } else {
-    return res.status(401).json({
+    return res.status(404).json({
       success: false,
       message: "Incorrect username or password",
     });
@@ -57,7 +64,7 @@ router.post("/users/notes", (req: Request, res: Response) => {
   const userExists = users.some((user) => user.email === userEmail);
 
   if (!userExists) {
-    return res.status(401).json({
+    return res.status(418).json({
       success: false,
       message: "Notes not found!",
     });
@@ -76,7 +83,7 @@ router.get("/users/notes", (req: Request, res: Response) => {
 
   const userExists = users.some((user) => user.email === userEmail);
   if (!userExists) {
-    return res.status(401).json({
+    return res.status(418).json({
       success: false,
       message: "User not found!",
     });
@@ -95,7 +102,7 @@ router.put("/users/notes/:id", (req: Request, res: Response) => {
 
   const noteIndex = notes.findIndex((note) => note.id == id);
   if (noteIndex == -1) {
-    return res.status(404).json({
+    return res.status(418).json({
       success: false,
       message: "Note not found!",
     });
@@ -114,7 +121,7 @@ router.delete("/users/notes/:id", (req: Request, res: Response) => {
 
   const note = notes.find((note) => note.id == id);
   if (!note) {
-    return res.status(404).json({
+    return res.status(418).json({
       success: false,
       message: "Note not found!",
     });
