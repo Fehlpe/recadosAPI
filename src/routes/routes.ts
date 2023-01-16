@@ -13,14 +13,14 @@ router.post("/users", (req: Request, res: Response) => {
   if (!username || !password || !email) {
     return res.status(400).json({
       success: false,
-      message: "Dados obrigatórios não registrados",
+      message: "Required fields not filled",
     });
   } else {
     const emailExists = users.some((user) => user.email === email);
     if (emailExists) {
       return res.status(404).json({
         success: false,
-        message: "Email já esta em uso!",
+        message: "Email already in use!",
       });
     }
     const user = new User(username, password, email);
@@ -46,7 +46,7 @@ router.post("/users/login", (req: Request, res: Response) => {
   } else {
     return res.status(401).json({
       success: false,
-      message: "Usuário ou senha incorretos",
+      message: "Incorrect username or password",
     });
   }
 });
@@ -59,7 +59,7 @@ router.post("/users/notes", (req: Request, res: Response) => {
   if (!userExists) {
     return res.status(401).json({
       success: false,
-      message: "Recados não encontrados!",
+      message: "Notes not found!",
     });
   } else {
     const note = new Note(title, userEmail, description);
@@ -78,7 +78,7 @@ router.get("/users/notes", (req: Request, res: Response) => {
   if (!userExists) {
     return res.status(401).json({
       success: false,
-      message: "Usuário não encontrado!",
+      message: "User not found!",
     });
   } else {
     const userNotes = notes.filter((note) => note.userEmail === userEmail);
@@ -97,7 +97,7 @@ router.put("/users/notes/:id", (req: Request, res: Response) => {
   if (noteIndex == -1) {
     return res.status(404).json({
       success: false,
-      message: "Nota não encontrada!",
+      message: "Note not found!",
     });
   } else {
     notes[noteIndex].title = title;
