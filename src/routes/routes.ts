@@ -68,6 +68,11 @@ router.post("/users/notes", (req: Request, res: Response) => {
       success: false,
       message: "Notes not found!",
     });
+  } else if (!title || !description) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing info",
+    });
   } else {
     const note = new Note(title, userEmail, description);
     notes.push(note);
