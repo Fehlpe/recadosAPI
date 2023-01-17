@@ -17,11 +17,13 @@ export class Note {
   id: string;
   title: string;
   description: string;
+  archived: boolean;
 
   constructor(title: string, userEmail: string, description: string) {
     this.id = v4();
     this.userEmail = userEmail;
     this.title = title;
     this.description = description;
+    this.archived = false;
   }
 }

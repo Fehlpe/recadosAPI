@@ -116,6 +116,44 @@ router.put("/users/notes/:id", (req: Request, res: Response) => {
   }
 });
 
+router.put("/:userEmail/notes/:id/archive", (req: Request, res: Response) => {
+  const { id, userEmail } = req.params;
+
+  const noteIndex = notes.findIndex((note) => note.id == id);
+  if (noteIndex == -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Note not found!",
+    });
+  } else {
+    notes[noteIndex].archived = true;
+    const userNotes = notes.filter((note) => note.userEmail === userEmail);
+    return res.status(200).json({
+      success: true,
+      data: userNotes,
+    });
+  }
+});
+
+router.put("/:userEmail/notes/:id/unarchive", (req: Request, res: Response) => {
+  const { id, userEmail } = req.params;
+
+  const noteIndex = notes.findIndex((note) => note.id == id);
+  if (noteIndex == -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Note not found!",
+    });
+  } else {
+    notes[noteIndex].archived = false;
+    const userNotes = notes.filter((note) => note.userEmail === userEmail);
+    return res.status(200).json({
+      success: true,
+      data: userNotes,
+    });
+  }
+});
+
 router.delete("/users/notes/:id", (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -132,6 +170,30 @@ router.delete("/users/notes/:id", (req: Request, res: Response) => {
       success: true,
       data: notes,
       message: "Note deleted successfully!",
+    });
+  }
+});
+
+router.get("/:userEmail/notes/search", (req: Request, res: Response) => {
+  const { userEmail } = req.params;
+  const { query } = req.query;
+
+  console.log(userEmail);
+
+  const userNotes = notes.filter((note) => note.userEmail === userEmail);
+
+  //@ts-ignore
+  const searchResults = userNotes.filter((note) => note.title.includes(query));
+
+  if (searchResults.length === 0) {
+    return res.status(201).json({
+      success: true,
+      data: userNotes,
+    });
+  } else {
+    return res.status(200).json({
+      success: true,
+      data: searchResults,
     });
   }
 });
